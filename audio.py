@@ -24,9 +24,9 @@ import edge_tts
 # `edge-tts --list-voices` on the host to see what's currently available.
 ENGLISH_VOICE = "en-US-JennyNeural"
 
-# Negative = slower. "-10%" is a gentle slow-down for learners.
-# Use "+0%" for normal speed or "-20%" for noticeably slower.
-SPEECH_RATE = "-10%"
+# Negative = slower. "-25%" is a clearly slower pace for learners.
+# Use "+0%" for normal speed, "-15%" for slightly slower, or "-35%" for very slow.
+SPEECH_RATE = "-25%"
 
 
 def _filename_for(sentence: str) -> str:
