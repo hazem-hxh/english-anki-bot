@@ -26,7 +26,7 @@ ENGLISH_VOICE = "en-US-JennyNeural"
 
 # Negative = slower. "-25%" is a clearly slower pace for learners.
 # Use "+0%" for normal speed, "-15%" for slightly slower, or "-35%" for very slow.
-SPEECH_RATE = "-25%"
+SPEECH_RATE = "-40%"
 
 
 def _filename_for(sentence: str) -> str:
