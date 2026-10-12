@@ -1,5 +1,5 @@
 """
-English Anki Bot - Audio generation
+German Anki Bot - Step 5: Audio generation
 
 Free, no API key needed. Uses Microsoft's edge-tts neural voices.
 
@@ -11,36 +11,40 @@ import hashlib
 import asyncio
 import edge_tts
 
-# English-only voices (NOT the "Multilingual" ones). Lesson learned on the
-# German bot: multilingual voices guess the language from the text, which
-# goes wrong on short isolated words. English-only voices can't make that
-# mistake. To switch, change ENGLISH_VOICE to one of these:
-#   "en-US-JennyNeural"   <- female, American (current)
-#   "en-US-AriaNeural"    <- female, American
-#   "en-US-GuyNeural"     <- male, American
-#   "en-GB-SoniaNeural"   <- female, British
-#   "en-GB-RyanNeural"    <- male, British
+# German-only voices (these only know German pronunciation, so they can't
+# mistake a short word like "null" for English the way a multilingual
+# voice can). To switch, change GERMAN_VOICE to one of these:
+#   "de-DE-AmalaNeural"                  <- female, German-only
+#   "de-DE-ConradNeural"                 <- male, German-only (current)
+#   "de-DE-KillianNeural"                <- male, German-only
+#   "de-DE-KatjaNeural"                  <- female, German-only, but can sound clipped/fast
+#   "de-DE-SeraphinaMultilingualNeural"  <- multilingual: natural-sounding, but guesses the
+#                                           language from context, so isolated words
+#                                           (e.g. "null") can come out sounding English
 # Voice names can change on Microsoft's side. If one stops working, run
 # `edge-tts --list-voices` on the host to see what's currently available.
-ENGLISH_VOICE = "en-US-JennyNeural"
+GERMAN_VOICE = "de-DE-ConradNeural"
 
-# Negative = slower. "-25%" is a clearly slower pace for learners.
-# Use "+0%" for normal speed, "-15%" for slightly slower, or "-35%" for very slow.
+# Negative = slower. "-40%" is a slow pace suited to beginners.
+# Going slower than about "-50%" starts to sound unnatural and robotic.
+# Use "+0%" for normal speed, "-25%" for a moderate slow-down.
 SPEECH_RATE = "-40%"
 
 
 def _filename_for(sentence: str) -> str:
-    """Turns a sentence into a short, safe, unique filename."""
+    """Turns a sentence into a short, safe, unique filename so re-runs
+    don't collide and we don't have to worry about special characters."""
     h = hashlib.sha1(sentence.encode("utf-8")).hexdigest()[:12]
     return f"audio_{h}.mp3"
 
 
 async def generate_audio(sentence: str, output_dir: str = ".", timeout_seconds: int = 15) -> str:
-    """Generates an mp3 for the given English sentence and returns its path.
-    Raises TimeoutError if edge-tts doesn't answer in time, instead of
-    hanging forever."""
+    """Generates an mp3 for the given German sentence.
+    Returns the file path it was saved to.
+    Raises TimeoutError if edge-tts doesn't respond in time, instead of
+    hanging forever (this is the fix for the silent-freeze bug)."""
     filename = _filename_for(sentence)
     path = f"{output_dir}/{filename}"
-    communicate = edge_tts.Communicate(sentence, ENGLISH_VOICE, rate=SPEECH_RATE)
+    communicate = edge_tts.Communicate(sentence, GERMAN_VOICE, rate=SPEECH_RATE)
     await asyncio.wait_for(communicate.save(path), timeout=timeout_seconds)
     return path
