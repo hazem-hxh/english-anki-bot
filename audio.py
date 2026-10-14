@@ -10,6 +10,14 @@ Requirements (installed on the host, not here):
 import hashlib
 import asyncio
 import edge_tts
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    EDGE_TTS_VERSION = version("edge-tts")
+except PackageNotFoundError:
+    EDGE_TTS_VERSION = "unknown"
+# Printed once at startup so the Railway logs show which version is really running.
+print(f"edge-tts version installed: {EDGE_TTS_VERSION}")
 
 # English-only voices (NOT the "Multilingual" ones). Lesson learned on the
 # German bot: multilingual voices guess the language from the text, which
@@ -30,7 +38,7 @@ ENGLISH_VOICE = "en-US-AvaNeural"
 # Negative = slower. "-40%" is a slow pace suited to beginners.
 # Going slower than about "-50%" starts to sound unnatural and robotic.
 # Use "+0%" for normal speed, "-25%" for a moderate slow-down.
-SPEECH_RATE = "-80%"
+SPEECH_RATE = "-40%"
 
 
 def _filename_for(sentence: str) -> str:
@@ -46,5 +54,10 @@ async def generate_audio(sentence: str, output_dir: str = ".", timeout_seconds: 
     filename = _filename_for(sentence)
     path = f"{output_dir}/{filename}"
     communicate = edge_tts.Communicate(sentence, ENGLISH_VOICE, rate=SPEECH_RATE)
-    await asyncio.wait_for(communicate.save(path), timeout=timeout_seconds)
+    try:
+        await asyncio.wait_for(communicate.save(path), timeout=timeout_seconds)
+    except Exception as e:
+        # Add the installed version so the error shown in Telegram tells us
+        # whether the latest edge-tts is really the one running.
+        raise RuntimeError(f"{e} [edge-tts {EDGE_TTS_VERSION}]") from e
     return path
