@@ -30,7 +30,7 @@ ENGLISH_VOICE = "en-US-AvaNeural"
 # Negative = slower. "-40%" is a slow pace suited to beginners.
 # Going slower than about "-50%" starts to sound unnatural and robotic.
 # Use "+0%" for normal speed, "-25%" for a moderate slow-down.
-SPEECH_RATE = "-40%"
+SPEECH_RATE = "-80%"
 
 
 def _filename_for(sentence: str) -> str:
