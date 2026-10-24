@@ -23,8 +23,8 @@ print(f"edge-tts version installed: {EDGE_TTS_VERSION}")
 # German bot: multilingual voices guess the language from the text, which
 # goes wrong on short isolated words. English-only voices can't make that
 # mistake. To switch, change ENGLISH_VOICE to one of these:
-#   "en-US-AvaNeural"     <- female, American (current)
-#   "en-US-JennyNeural"   <- female, American (previous default)
+#   "en-US-JennyNeural"   <- female, American (current)
+#   "en-US-AvaNeural"     <- female, American (tried, not kept)
 #   "en-US-AndrewNeural"  <- male, American
 #   "en-US-BrianNeural"   <- male, American
 #   "en-US-AriaNeural"    <- female, American
@@ -33,12 +33,13 @@ print(f"edge-tts version installed: {EDGE_TTS_VERSION}")
 #   "en-GB-RyanNeural"    <- male, British
 # Voice names can change on Microsoft's side. If one stops working, run
 # `edge-tts --list-voices` on the host to see what's currently available.
-ENGLISH_VOICE = "en-US-AvaNeural"
+ENGLISH_VOICE = "en-US-JennyNeural"
 
-# Negative = slower. "-40%" is a slow pace suited to beginners.
-# Going slower than about "-50%" starts to sound unnatural and robotic.
-# Use "+0%" for normal speed, "-25%" for a moderate slow-down.
-SPEECH_RATE = "-40%"
+# Negative = slower. "-50%" is half of normal speed, the slowest setting that still
+# sounds like natural speech. "-80%" (one fifth of normal speed) is very likely to
+# sound stretched, and the service may reject values below -50%.
+# Use "+0%" for normal speed, "-20%" for a mild slow-down.
+SPEECH_RATE = "-50%"
 
 
 def _filename_for(sentence: str) -> str:
